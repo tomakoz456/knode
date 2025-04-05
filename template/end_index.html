@@ -1,0 +1,73 @@
+</article>
+<!-- The Modal -->
+<div id="kpicsPreviewModal" class="modal">
+
+    <!-- The Close Button -->
+    <span class="close">&times;</span>
+    <p id="prev">PREV</p>
+    <!-- Modal Content (The Image) -->
+    <img class="modal-content" id="img01">
+
+    <!-- Modal Caption (Image Text) -->
+    <div id="caption"></div>
+</div>
+<script>
+    var modal = document.getElementById('kpicsPreviewModal');
+    var photos = document.getElementsByClassName('thumb');
+    var rect = new Object;
+    var x = 0;
+    var y = 0;
+    // console.table(photos);
+    for (let photo in photos) {
+
+        
+        rect[photo] = new Object();
+        rect[photo]['height'] = photos[photo].clientHeight;
+        rect[photo]['width'] = photos[photo].clientWidth;
+        rect[photo]['top'] = photos[photo].clientHeight;
+        photos[photo]['style']['left']= x + "px";
+        photos[photo].style.top = y + "px";
+        console.log(photos[photo]);
+        x += photos[photo].clientWidth;
+        if ( x > document.body.clientWidth ) {
+            x = 0;
+            y += photos[photo].clientHeight;
+        }
+        // console.log(photos[photo]);
+        var modalImg = document.getElementById("img01");
+        var captionText = document.getElementById("caption");
+        photos[photo].onmouseover = function(e)  {
+            console.log("hover element" + photos[photo]);
+        };
+        photos[photo].onclick = function(e) {
+            e.preventDefault();
+            modal.style.display = "block";
+            modalImg.src = this.href;
+        };
+        var span = document.getElementsByClassName("close")[0];
+
+        span.onclick = function() {
+            modal.style.display = "none";
+        };
+
+        document.addEventListener("keydown", function(e) {
+            if(e.keyCode == 27) {
+                modal.style.display = "none";
+            }
+        });
+
+        var prev = document.getElementById('prev');
+        prev.onmouseover = function() {
+            console.log('hover prev');
+        }
+        prev.onclick = function() {
+            // e.preventDefault();
+            console.log('click prev');
+            let random_id = Math.floor(photos.length * Math.random());
+            console.log(random_id);
+            modalImg.src = photos[random_id].href;
+        }
+    }
+</script>
+</body>
+</html>
