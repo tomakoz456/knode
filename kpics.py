@@ -56,7 +56,8 @@ def thumb(_photo_path):
 
 
 if __name__ == '__main__':
-    _photos_dir_path = r'C:\Users\kogut\Desktop\S19_Babica'
+    _photos_dir_path = r'K:\trainman\fb'
+    # _photos_dir_path = r'C:\Users\kogut\Desktop\S19_Babica'
     _thumb_dir = r'C:\Users\kogut\Documents\.kpics'
     _thumb_height = 153
     _photos = scan_dir(_photos_dir_path)
