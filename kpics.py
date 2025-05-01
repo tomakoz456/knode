@@ -6,6 +6,9 @@ import pathlib
 import hashlib
 import numpy as np
 
+# @todo 
+# import CPicle as cp
+
 _max_width = 1200
 _max_height = 900
 
