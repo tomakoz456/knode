@@ -5,7 +5,11 @@
     <!-- The Close Button -->
     <span class="close">&times;</span>
     <p id="prev">PREV</p>
-    <p id="add">ADD</p>
+    <p id="buttons">
+        <p id="add">ADD</p>
+        <p id="del">DEL</p>
+        <p id="info">INFO</p>
+    </p>
     <!-- Modal Content (The Image) -->
     <img class="modal-content" id="img01">
     <p id="next">NEXT</p>
@@ -16,120 +20,132 @@
 </div>
 <script>
     document.addEventListener('onload', function(e) {
-        console.log(this);
-    })
-    var historyPhoto = new Array();
-    var modal = document.getElementById('kpicsPreviewModal');
-    var photos = document.getElementsByClassName('thumb');
-    var rect = new Object;
-    var x = 0;
-    var y = 0;
-    
-    var photo_id = {};
-    for (let photo in photos) {
-        if (!parseInt(photo)) {
-            continue;
-        }
-        if ( x + photos[photo].clientWidth + 23 > document.body.clientWidth ) {
-            x = 0;
-            y += photos[photo].clientHeight + 23;
-        }
-        photos[photo].classList.add('thumb-show');
-        rect[photo] = new Object();
-        rect[photo]['height'] = photos[photo].clientHeight;
-        rect[photo]['width'] = photos[photo].clientWidth;
-        rect[photo]['top'] = photos[photo].clientHeight;
-        photos[photo].style['left']= x + "px";
-        photos[photo].style['top'] = y + "px";
-        
-        x += photos[photo].clientWidth + 23;
-
-        // console.log(photos[photo]);
-        var modalImg = document.getElementById("img01");
-        var captionText = document.getElementById("caption");
-        photos[photo].onmouseover = function(e)  {
-            console.log("hover element" + photos[photo]);
-        };
-        photos.forEach.onclick(element => {
-            console.log("click element" + element);
-            e.preventDefault();
-            var kimg = this.children[0];
-            kimg.classList.add('thumb-show');
-            kimg.height = Math.round(window.innerHeight * 0.8);
-        });
-        // photos.forEach(element => {
-        //     this.onclick = function(e) {
-        //         console.log("click element" + element);
-        //         e.preventDefault();
-        //         var kimg = this.children[0];
-        //         kimg.classList.add('thumb-show');
-        //         kimg.height = Math.round(window.innerHeight * 0.8);
-        //     };
-        // });
-        photos[photo].onclick = function(e) {
-            e.preventDefault();
-            var kimg = this.children[0];
-            kimg.classList.add('thumb-show');
-            kimg.height = Math.round(window.outerHeight * 0.8);
-            
-            if (1 == 2) {
-            this.style.setProperty('z-index', 10000);
-            this.getElementsByTagName('img').src = this.href;
-
-            modal.style.display = "block";
-            modalImg.src = this.href;
-            modalImg.classList.add('change');
-            modalImg.classList.remove('changed')
-            modal.style.height = Math.round(window.innerHeight * 0.8); // - (window.innerHeight * 0.084));
-            document.cookie = 'photo_id=' + photo;
-            modalImg.classList.add('changed');
-            modalImg.classList.remove('change')
-            }
-        };
-        var span = document.getElementsByClassName("close")[0];
-
-        span.onclick = function() {
-            modal.style.display = "none";
-        };
-
-        document.addEventListener("keydown", function(e) {
-            if(e.keyCode == 27) {
-                modal.style.display = "none";
-            }
-        });
-
-        var prevPhoto = document.getElementById('prev');
-        prevPhoto.onmouseover = function() {
-            console.log('hover prev');
-        }
-        prevPhoto.onclick = function() {
-
-            modalImg.classList.add('change');
-            console.log("change modalImg");
-            modalImg.classList.remove('changed')
-            
-            // e.preventDefault();
-            console.log('click prev');
-            let random_id = Math.floor(photos.length * Math.random());
-            console.log(random_id);
-            modalImg.src = photos[random_id].href;
-            modalImg.id = random_id;
-            modalImg.classList.add('changed');
-            modalImg.classList.remove('change')
-            console.log("changed modalImg");
-            modalImg.style.setProperty('--animation-time', Math.random() + 's')
-        }
-
-        var nextPhoto = document.getElementById('next');
-        // nextPhoto.onmouseover = function() {
-            // modalImg.classList.add('hover')
-        // }
-        nextPhoto.onclick = function() {
-            modalImg.src = photos[modalImg.id + 1].href;
-            modalImg.id = modalImg.id + 1;
-        }
-        
-    }
-</script>
+           console.log(this);
+       })
+       var historyPhoto = new Array();
+       var modal = document.getElementById('kpicsPreviewModal');
+       var photos = document.getElementsByClassName('thumb');
+       var rect = new Object;
+       var x = 0;
+       var y = 0;
+       
+       var photo_id = {};
+       for (let photo in photos) {
+           if (!parseInt(photo)) {
+               continue;
+           }
+           if ( x + photos[photo].clientWidth + 23 > document.body.clientWidth ) {
+               x = 0;
+               y += photos[photo].clientHeight + 0;
+           }
+           photos[photo].classList.add('thumb-show');
+           rect[photo] = new Object();
+           rect[photo]['height'] = photos[photo].clientHeight;
+           rect[photo]['width'] = photos[photo].clientWidth;
+           rect[photo]['top'] = photos[photo].clientHeight;
+           photos[photo].style['left']= x + "px";
+           photos[photo].style['top'] = y + "px";
+           
+           x += photos[photo].clientWidth + 1;
+   
+           // console.log(photos[photo]);
+           var modalImg = document.getElementById("img01");
+           var captionText = document.getElementById("caption");
+           photos[photo].onmouseover = function(e)  {
+               console.log("hover element" + photos[photo]);
+           };
+           photos[photo].onclick = function(e) {
+               e.preventDefault();
+               // var kimg = this.children[0];
+               // kimg.classList.add('thumb-show');
+               // var _height = Math.round(window.innerHeight * 0.8);
+                
+               
+               // var proportion = photos[photo].firstChild.clientWidth / photos[photo].firstChild.clientHeight;
+               // console.log(proportion);
+               // console.log(kimg);
+               // kimg.width = _height * proportion;
+               // kimg.height = _height;
+               // kimg.left = photos[photo].left - 0.5 * photos[photo].firstChild.clientWidth;
+               // kimg.top = photos[photo].top - 0.5 * photos[photo].firstChild.clientHeight;
+   
+               // console.log(kimg.width);
+               // console.log(kimg.height);
+               // kimg.src = photos[photo].href;
+               // if (1 == 2) {
+                   this.style.setProperty('z-index', 1);
+                   // this.getElementsByTagName('img').src = this.href;
+   
+                   modal.style.display = "block";
+                   modalImg.src = this.href;
+                   modalImg.classList.add('change');
+                   modalImg.classList.remove('changed')
+                   modalImg.id = photo
+                   modal.style.height = Math.round(window.innerHeight * 0.9);
+                   document.cookie = 'photo_id=' + photo;
+                   modalImg.classList.add('changed');
+                   modalImg.classList.remove('change')
+               // }
+           };
+           var span = document.getElementsByClassName("close")[0];
+   
+           span.onclick = function() {
+               modal.style.display = "none";
+           };
+   
+           document.addEventListener("keydown", function(e) {
+               if(e.keyCode == 27) {
+                   modal.style.display = "none";
+               }
+           });
+   
+           var prevPhoto = document.getElementById('prev');
+           prevPhoto.onmouseover = function() {
+               console.log('hover prev');
+           }
+           prevPhoto.onclick = function() {
+   
+               modalImg.classList.add('change');
+               console.log("change modalImg");
+               modalImg.classList.remove('changed')
+               
+               // e.preventDefault();
+               console.log('click prev');
+               let random_id = Math.floor(photos.length * Math.random());
+               console.log(random_id);
+               modalImg.src = photos[random_id].href;
+               modalImg.id = random_id;
+               modalImg.classList.add('changed');
+               modalImg.classList.remove('change')
+               console.log("changed modalImg");
+               modalImg.style.setProperty('--animation-time', Math.random() + 's')
+           }
+   
+           var nextPhoto = document.getElementById('next');
+           // nextPhoto.onmouseover = function() {
+               // modalImg.classList.add('hover')
+           // }
+           nextPhoto.onclick = function() {
+               console.log('check modalImg.id = ' + modalImg.id);
+               modalImg.id = parseInt(modalImg.id);
+               modalImg.id++;
+               if (modalImg.id == photos.length - 1) {
+                   modalImg.classList.add('change');
+                   console.log("change modalImg");
+                   modalImg.classList.remove('changed')
+                   modalImg.src = photos[0].href;
+                   modalImg.id = 0;
+               } else {
+                   modalImg.classList.add('change');
+                   console.log("change modalImg");
+                   modalImg.classList.remove('changed')
+                   console.log(modalImg.id);
+                   modalImg.src = photos[modalImg.id].href;
+                   modalImg.id = modalImg.id;
+               }
+           }
+           
+       }
+   </script>
 </body>
 </html>

@@ -5,6 +5,9 @@ import glob
 import pathlib
 import hashlib
 import numpy as np
+import sys
+# import matplotlib.pyplot as plt
+
 
 _max_width = 1200
 _max_height = 900
@@ -66,7 +69,7 @@ def thumb(_photo_path):
 
 if __name__ == '__main__':
     _photos_dir_path = r'K:\trainman\fb'
-    _photos_dir_path = r'C:\Users\kogut\Desktop\piec'
+    # _photos_dir_path = r'C:\Users\kogut\Desktop\piec'
     _thumb_dir = r'C:\Users\kogut\Documents\.kpics'
     _thumb_height = 153
     _photos = scan_dir(_photos_dir_path)
@@ -159,5 +162,5 @@ with open(_html_path, 'w') as f:
 
 import shutil
 css_path = os.path.join(_thumb_dir_path, os.path.basename(_css))
-if not os.path.isfile(css_path):
+if not os.path.isfile(css_path) or os.path.getsize(css_path) != os.path.getsize(_css):
     shutil.copy2(_css, css_path)
