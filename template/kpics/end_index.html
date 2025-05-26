@@ -50,11 +50,27 @@
         photos[photo].onmouseover = function(e)  {
             console.log("hover element" + photos[photo]);
         };
-        photos[photo].onclick = function(e) {
+        photos.forEach.onclick(element => {
+            console.log("click element" + element);
             e.preventDefault();
             var kimg = this.children[0];
             kimg.classList.add('thumb-show');
             kimg.height = Math.round(window.innerHeight * 0.8);
+        });
+        // photos.forEach(element => {
+        //     this.onclick = function(e) {
+        //         console.log("click element" + element);
+        //         e.preventDefault();
+        //         var kimg = this.children[0];
+        //         kimg.classList.add('thumb-show');
+        //         kimg.height = Math.round(window.innerHeight * 0.8);
+        //     };
+        // });
+        photos[photo].onclick = function(e) {
+            e.preventDefault();
+            var kimg = this.children[0];
+            kimg.classList.add('thumb-show');
+            kimg.height = Math.round(window.outerHeight * 0.8);
             
             if (1 == 2) {
             this.style.setProperty('z-index', 10000);
@@ -64,7 +80,7 @@
             modalImg.src = this.href;
             modalImg.classList.add('change');
             modalImg.classList.remove('changed')
-            modal.style.height = Math.round(window.innerHeight - (window.innerHeight * 0.084));
+            modal.style.height = Math.round(window.innerHeight * 0.8); // - (window.innerHeight * 0.084));
             document.cookie = 'photo_id=' + photo;
             modalImg.classList.add('changed');
             modalImg.classList.remove('change')

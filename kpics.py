@@ -66,6 +66,7 @@ def thumb(_photo_path):
 
 if __name__ == '__main__':
     _photos_dir_path = r'K:\trainman\fb'
+    _photos_dir_path = r'C:\Users\kogut\Desktop\piec'
     _thumb_dir = r'C:\Users\kogut\Documents\.kpics'
     _thumb_height = 153
     _photos = scan_dir(_photos_dir_path)
@@ -87,30 +88,35 @@ if __name__ == '__main__':
         _thumb_name = "%s.%s" % (hashlib.md5(_path.encode()).hexdigest(), _path.split('.')[-1])
         # _thumb_path = os.path.join(_thumb_dir_path, _thumb_name)
         _thumb_full_path = os.path.join(_thumb_dir_path, _thumb_name)
-        if os.path.isfile(_path) and not os.path.isfile(_thumb_full_path):
-            photo = cv2.imread(_path)
-            if photo is None:
-                print("Ignoring wrong photo file: %s" % _path)
-                continue
-            print("photo shape for: %s" % _path)
-            photo_height, photo_width = photo.shape[:2]
+        if os.path.isfile(_path): # and not os.path.isfile(_thumb_full_path):
+            if not os.path.isfile(_thumb_full_path): # check if 
+                photo = cv2.imread(_path)
+                if photo is None:
+                    print("Ignoring wrong photo file: %s" % _path)
+                    continue
+                print("photo shape for: %s" % _path)
+                photo_height, photo_width = photo.shape[:2]
 
-            # proportion = photo_width / photo_height
-            thumb_height = _thumb_height
+                # proportion = photo_width / photo_height
+                thumb_height = _thumb_height
 
-            # scale = photo_height / thumb_height
-            # thumb_width = int(photo_width / scale) 
-            # if photo_height > photo_width:
-            #     thumb_width = photo_width / scale
-            # elif photo_height < photo_width:
-            #     thumb_width = photo_width / scale
-            # else:
-            #     thumb_width = photo_width / scale
-            thumb_width = int((thumb_height * photo_width) / photo_height)
-            # if (thumb_width / thumb_height) is not proportion:
-                # print("wrong photo dimmension for file: %s => %s" % (_path, proportion))
-            _thumb = cv2.resize(photo, (int(thumb_width), int(thumb_height)), thumb_width/photo_width, thumb_height/photo_height)
-            cv2.imwrite(_thumb_full_path, _thumb)
+                # scale = photo_height / thumb_height
+                # thumb_width = int(photo_width / scale) 
+                # if photo_height > photo_width:
+                #     thumb_width = photo_width / scale
+                # elif photo_height < photo_width:
+                #     thumb_width = photo_width / scale
+                # else:
+                #     thumb_width = photo_width / scale
+                thumb_width = int((thumb_height * photo_width) / photo_height)
+                # if (thumb_width / thumb_height) is not proportion:
+                    # print("wrong photo dimmension for file: %s => %s" % (_path, proportion))
+                _thumb = cv2.resize(photo, (int(thumb_width), int(thumb_height)), thumb_width/photo_width, thumb_height/photo_height)
+                cv2.imwrite(_thumb_full_path, _thumb)
+            else:
+                print("Thumb file already exists: %s" % _thumb_full_path)
+                thumb = cv2.imread(_thumb_full_path)
+                thumb_height, thumb_width = thumb.shape[:2]
             _html += '<a id="photo-' + str(id) + '" href="' + _path + '" class="thumb" title="' + os.path.basename(_path) + ' in ' + os.path.dirname(_path) + '">'
             _html += '<img src="' + _thumb_full_path + '" alt="'+ os.path.basename(_thumb_full_path) + '" width="'+ str(thumb_width) +'" height="'+ str(thumb_height) + '"/>'
             _html += '</a>'
