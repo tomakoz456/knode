@@ -6,6 +6,9 @@ import pathlib
 import hashlib
 import numpy as np
 import sys
+import shutil
+# import time
+# import datetime
 # import matplotlib.pyplot as plt
 
 
@@ -63,6 +66,7 @@ def thumb(_photo_path):
 
 class KpicsProcessor:
     def __init__(self, photos_dir_path, thumb_dir, thumb_height=153):
+        self.init_dir = os.getcwd()
         # if type(photos_dir_path) is not dict:
         #     raise ValueError("photos_dir_path must be a dictionary with photo dir IDs as keys and paths as values.")
         self.photos_dir_path = photos_dir_path
@@ -87,7 +91,8 @@ class KpicsProcessor:
             thumb_full_path = os.path.join(self.thumb_dir_path, thumb_name)
             if os.path.isfile(path):
                 if not os.path.isfile(thumb_full_path):
-                    photo = cv2.imread(path)
+                    os.chdir(os.path.dirname(path))
+                    photo = cv2.imread(os.path.basename(path))
                     if photo is None:
                         print("Ignoring wrong photo file: %s" % path)
                         continue
@@ -99,15 +104,55 @@ class KpicsProcessor:
                     cv2.imwrite(thumb_full_path, thumb)
                 else:
                     print("Thumb file already exists: %s" % thumb_full_path)
-                    thumb = cv2.imread(thumb_full_path)
+                    os.chdir(os.path.dirname(thumb_full_path))
+                    thumb = cv2.imread(os.path.basename(thumb_full_path))
                     thumb_height, thumb_width = thumb.shape[:2]
                 self.html += '<a id="photo-' + str(id) + '" href="' + path + '" class="thumb" title="' + os.path.basename(path) + ' in ' + os.path.dirname(path) + '">'
                 self.html += '<img src="' + thumb_full_path + '" alt="'+ os.path.basename(thumb_full_path) + '" width="'+ str(thumb_width) +'" height="'+ str(thumb_height) + '"/>'
                 self.html += '</a>'
                 id += 1
+                os.chdir(self.init_dir)
+
+    def generate_html(self, html_name='index.html'):
+        html_path = os.path.join(self.thumb_dir_path, html_name)
+        # template_dir = os.path.dirname(html_path)
+        template_dir = r'Y:\dev\kpics\template\kpics'
+        if not os.path.isdir(template_dir):
+            template_head_path = r'Y:\dev\topik-1\template\kpics\head_index.html'
+            template_end_path = r'Y:\dev\topik-1\template\kpics\end_index.html'
+            css = r'Y:\dev\topik-1\template\kpics\index.css'
+        else:
+            template_head_path = os.path.join(template_dir, 'head_index.html')
+            template_end_path = os.path.join(template_dir, 'end_index.html')
+            css = os.path.join(template_dir, 'index.css')
+        if not os.path.isfile(template_head_path) or not os.path.isfile(template_end_path):
+            raise FileNotFoundError("Template files not found in: %s" % template_dir)
+        
+        template = ''
+        with open(template_head_path) as f:
+            lines = f.readlines()
+            for line in lines:
+                template += line
+
+        template_footer = ''
+        with open(template_end_path) as f:
+            lines = f.readlines()
+            for line in lines:
+                template_footer += line
+
+        with open(html_path, 'w') as f:
+            f.writelines(template)
+            f.writelines(self.html)
+            f.writelines(template_footer)
+
+        css_path = os.path.join(self.thumb_dir_path, os.path.basename(css))
+        if not os.path.isfile(css_path) or os.path.getsize(css_path) != os.path.getsize(css):
+            shutil.copy2(css, css_path)
+
 
 if __name__ == '__main__':
     photos_dir_dict = {0: r'K:\trainman\fb'}
+    photos_dir_dict[1] = r'Y:\Pictures\instagram'
     processor = KpicsProcessor(
         photos_dir_path=photos_dir_dict,
         thumb_dir=r'C:\Users\kogut\Documents\.kpics',
@@ -117,41 +162,15 @@ if __name__ == '__main__':
     _html = processor.html
     _thumb_dir_path = processor.thumb_dir_path
 
-_html_name = 'index.html'
-_html_path = os.path.join(_thumb_dir_path, _html_name)
+    processor.generate_html()
+    print("HTML generated in: %s" % _thumb_dir_path)
+    # show("Thumb", thumb)
+    # print(_html)
+    # print(_thumb_dir_path)
+    print("Photos processed: %d" % len(processor.photos))
+    print("Thumbs generated: %d" % len(processor.html))
+    # print("Thumbs dir: %s" % processor.thumb_dir_path)
+    # print("Thumbs dir name: %s" % processor.thumb_dir_name)
+    # print("Photos dir path: %s" % processor.photos_dir_path)
+    # print("Photos dir: %s" % photos_dir_dict)
 
-_template_head_path = r'Y:\dev\topik-1\template\kpics\head_index.html'
-_template_end_path = r'Y:\dev\topik-1\template\kpics\end_index.html'
-_css = r'Y:\dev\topik-1\template\kpics\index.css'
-html = ''
-
-_template = ''
-with open(_template_head_path) as f:
-    lines = f.readlines()
-    for line in lines:
-        _template += line
-    # html += lines.splitlines()
-
-_template_footer = ''
-with open(_template_end_path) as f:
-    lines = f.readlines()
-    for line in lines:
-        _template_footer += line
-    
-with open(_html_path, 'w') as f:
-    f.writelines(_template)
-    f.writelines(_html)
-    f.writelines(_template_footer)
-# print(_template)
-# html += _html
-
-
-# html += _template.splitlines()
-# _html = html
-# with open(_html_path, 'w') as f:
-#     f.writelines(_html)
-
-import shutil
-css_path = os.path.join(_thumb_dir_path, os.path.basename(_css))
-if not os.path.isfile(css_path) or os.path.getsize(css_path) != os.path.getsize(_css):
-    shutil.copy2(_css, css_path)
