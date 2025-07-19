@@ -7,6 +7,7 @@ import hashlib
 import numpy as np
 import sys
 import shutil
+from urllib.parse import quote, urlencode
 # import time
 # import datetime
 # import matplotlib.pyplot as plt
@@ -75,8 +76,17 @@ class KpicsProcessor:
         self.photos = scan_dir(self.photos_dir_path)
         self.thumb_dir_name = hashlib.md5(list(self.photos_dir_path.values())[0].encode()).hexdigest()
         self.thumb_dir_path = os.path.join(self.thumb_dir, self.thumb_dir_name)
+        self.links_dir_path = os.path.join(self.thumb_dir_path, 'links')
         self.html = ''
         self.ensure_thumb_dir()
+        self.ensure_links_dir()
+
+    def ensure_links_dir(self):
+        if not os.path.isdir(self.links_dir_path):
+            os.mkdir(self.links_dir_path)
+            print("Create dir for links in: %s" % self.links_dir_path)
+        else:
+            print("Links dir already exists: %s" % self.links_dir_path)
 
     def ensure_thumb_dir(self):
         if not os.path.isdir(self.thumb_dir_path):
@@ -107,6 +117,10 @@ class KpicsProcessor:
                     os.chdir(os.path.dirname(thumb_full_path))
                     thumb = cv2.imread(os.path.basename(thumb_full_path))
                     thumb_height, thumb_width = thumb.shape[:2]
+                # link = os.path.join(self.links_dir_path, thumb_name)
+                # if not os.path.islink(link):
+                #     os.symlink(path, link)
+                #     print("Create symlink for thumb: %s" % link)
                 self.html += '<a id="photo-' + str(id) + '" href="' + path + '" class="thumb" title="' + os.path.basename(path) + ' in ' + os.path.dirname(path) + '">'
                 self.html += '<img src="' + thumb_full_path + '" alt="'+ os.path.basename(thumb_full_path) + '" width="'+ str(thumb_width) +'" height="'+ str(thumb_height) + '"/>'
                 self.html += '</a>'
@@ -128,23 +142,25 @@ class KpicsProcessor:
         if not os.path.isfile(template_head_path) or not os.path.isfile(template_end_path):
             raise FileNotFoundError("Template files not found in: %s" % template_dir)
         
-        template = ''
-        with open(template_head_path) as f:
-            lines = f.readlines()
-            for line in lines:
-                template += line
+        # template = ''
+        with open(html_path, 'w', encoding="utf-8") as file_out:
+            with open(template_head_path, "r", encoding="utf-8") as file_in:
+                lines = file_in.readlines()
+                for line in lines:
+                    file_out.writelines(line)
+                    # template += line
+            file_in.close()
+            file_out.writelines(self.html)
+            # template += self.html
 
-        template_footer = ''
-        with open(template_end_path) as f:
-            lines = f.readlines()
-            for line in lines:
-                template_footer += line
-
-        with open(html_path, 'w') as f:
-            f.writelines(template)
-            f.writelines(self.html)
-            f.writelines(template_footer)
-
+            template_footer = ''
+            with open(template_end_path, "r", encoding="utf-8") as file_in:
+                lines = file_in.readlines()
+                for line in lines:
+                    file_out.writelines(line)
+                    # template_footer += line
+            file_in.close()
+        file_out.close()
         css_path = os.path.join(self.thumb_dir_path, os.path.basename(css))
         if not os.path.isfile(css_path) or os.path.getsize(css_path) != os.path.getsize(css):
             shutil.copy2(css, css_path)
@@ -153,6 +169,7 @@ class KpicsProcessor:
 if __name__ == '__main__':
     photos_dir_dict = {0: r'K:\trainman\fb'}
     photos_dir_dict[1] = r'Y:\Pictures\instagram'
+    # photos_dir_dict = {0: r'Y:\Pictures\instagram'}
     processor = KpicsProcessor(
         photos_dir_path=photos_dir_dict,
         thumb_dir=r'C:\Users\kogut\Documents\.kpics',
@@ -166,9 +183,9 @@ if __name__ == '__main__':
     print("HTML generated in: %s" % _thumb_dir_path)
     # show("Thumb", thumb)
     # print(_html)
-    # print(_thumb_dir_path)
+    # print(_thumb_dir_path)dfd
     print("Photos processed: %d" % len(processor.photos))
-    print("Thumbs generated: %d" % len(processor.html))
+    print("HTML generated: %d" % len(processor.html))
     # print("Thumbs dir: %s" % processor.thumb_dir_path)
     # print("Thumbs dir name: %s" % processor.thumb_dir_name)
     # print("Photos dir path: %s" % processor.photos_dir_path)
