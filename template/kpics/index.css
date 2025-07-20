@@ -36,7 +36,7 @@ body {
 header{
   height: auto;
   display: inline-block;
-  background: rgba(23,23,23,0.8);
+  background: rgba(23,23,23,0.83);
   color: rgba(233,233,233,0.9);
 }
 .thumb-show {
@@ -55,7 +55,7 @@ header{
   opacity: 1;
   left: 50%;
   top: 50%;
-  border: 10px solid rgb(0, 0, 0);
+  border: 1px groove rgba(24, 34, 13, 0.83);
   height: auto;
   display: block;
   width: fit-content;
@@ -65,6 +65,7 @@ header{
   animation-duration: 2s;
   animation-timing-function: ease-in;
   animation-iteration-count: 1;
+  background: rgb(212 255 235 / 50%);
 }
 .thumb:hover {
   animation-name: hoverphoto;
@@ -77,6 +78,34 @@ header{
   z-index: 10;
   box-shadow: -5px -5px 5px 10px rgba(23, 23, 23, 0.5), 5px -5px 5px 10px rgba(23, 233, 233, 0.1), 0px 0px 5px 9px rgba(23, 233, 233, 0.6), 0px 0px 0px 5px rgba(233, 23, 233, 0.3);
 }
+
+.thumb img {
+  display: block;
+  float: left;
+  position: relative;
+}
+
+.thumb .photo_filename, .thumb .photo_ctime, .thumb .photo_mtime, .thumb .photo_size {
+  display: none;
+  position: relative;
+  left: 0px;
+  font-size: 8px;
+  font-family: monospace;
+}
+
+.thumb:hover .photo_filename, .thumb:hover .photo_ctime, .thumb:hover .photo_mtime, .thumb:hover .photo_size {
+  display: block;
+  float: left;
+  clear: both;
+  color: #383838;
+  text-shadow: 0px 1px 2px;
+}
+.thumb:hover .label {
+  font-weight: bold;
+}
+/* .thumb:hover .photo_filename .label, .thumb:hover .photo_ctime, .thumb:hover .photo_mtime, .thumb:hover .photo_size {
+
+} */
 
 /* Style the Image Used to Trigger the Modal */
 #myImg {
@@ -144,7 +173,7 @@ header{
 
 @keyframes changedPhoto {
   from {
-    opacity: 0;
+    opacity: 0.83;
   }
   to {
     opacity: 1;
@@ -192,7 +221,7 @@ header{
   float: left;
   width: 50px;
   height: 100%;
-  position: absolute;
+  position: fixed;
   z-index: 10000;
   background: rgba(233, 233, 0, 0.1);
   color: silver;
@@ -202,6 +231,7 @@ header{
 #prev {    
   top: 0;
   left: 0;
+  box-shadow: 5px  10px 15px rgba(0,0,0,0.9);
 }
 
 #next {

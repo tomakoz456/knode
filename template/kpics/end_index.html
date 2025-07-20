@@ -95,7 +95,11 @@
    
            document.addEventListener("keydown", function(e) {
                if(e.keyCode == 27) {
-                   modal.style.display = "none";
+                    // document.body.scrollTop(document.getElementById(photo).offsetTop());
+                //    document.body.scrollTop = document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).offsetTop;
+                document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).scrollIntoView({ behavior: 'smooth' });
+                   console.log('scroll to photo-' + modal.getElementsByTagName('img')[0].getAttribute('id'));   
+                modal.style.display = "none";
                }
            });
    

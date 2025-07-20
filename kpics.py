@@ -8,8 +8,9 @@ import numpy as np
 import sys
 import shutil
 from urllib.parse import quote, urlencode
+import datetime
+from humanfriendly import format_size, format_path, format_timespan
 # import time
-# import datetime
 # import matplotlib.pyplot as plt
 
 
@@ -81,6 +82,17 @@ class KpicsProcessor:
         self.ensure_thumb_dir()
         self.ensure_links_dir()
 
+    def add_html(self, html):
+        self.html += html
+
+    def get_external_links(self, path):
+        links_path = os.path.join(os.path.dirname(path), 'info.txt')
+        if os.path.exists(links_path):
+            f = open(links_path, 'r')
+            links = f.readlines()
+            for l in links:
+                self.add_html('<span class="photo_links"><a href="%s" title="%s">link</a></span>' % (l, l))
+
     def ensure_links_dir(self):
         if not os.path.isdir(self.links_dir_path):
             os.mkdir(self.links_dir_path)
@@ -117,13 +129,17 @@ class KpicsProcessor:
                     os.chdir(os.path.dirname(thumb_full_path))
                     thumb = cv2.imread(os.path.basename(thumb_full_path))
                     thumb_height, thumb_width = thumb.shape[:2]
-                # link = os.path.join(self.links_dir_path, thumb_name)
-                # if not os.path.islink(link):
-                #     os.symlink(path, link)
-                #     print("Create symlink for thumb: %s" % link)
-                self.html += '<a id="photo-' + str(id) + '" href="' + path + '" class="thumb" title="' + os.path.basename(path) + ' in ' + os.path.dirname(path) + '">'
-                self.html += '<img src="' + thumb_full_path + '" alt="'+ os.path.basename(thumb_full_path) + '" width="'+ str(thumb_width) +'" height="'+ str(thumb_height) + '"/>'
-                self.html += '</a>'
+
+                self.add_html('<a id="photo-%s" href="%s" class="thumb" title="%s in %s">' % (str(id), path, os.path.basename(path), os.path.dirname(path)))
+                self.add_html('<img src="%s" alt="%s" width="%s" height="%s"/>' % (path, os.path.basename(path), str(thumb_width), str(thumb_height)))
+                self.add_html('<p class="photo_info">')
+                self.add_html('<span class="photo_filename" title="Nazwa pliku">%s</span>' % os.path.basename(path))
+                self.add_html('<span class="photo_ctime" title="Data utworzenia">%s</span>' % datetime.datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y-%m-%d %H:%M:%S'))
+                self.add_html('<span class="photo_mtime" title="Data modyfikacji">%s</span>' % datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y-%m-%d %H:%M:%S'))
+                self.add_html('<span class="photo_size" title="Rozmiar pliku">%s</span>' % format_size(os.path.getsize(path), binary=True))
+                self.get_external_links(path)
+                self.add_html('</p>')
+                self.add_html('</a>')
                 id += 1
                 os.chdir(self.init_dir)
 
