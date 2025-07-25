@@ -10,6 +10,7 @@
         <p id="del">DEL</p>
         <p id="info">INFO</p>
     </p>
+    <p id="random">RANDOM</p>
     <!-- Modal Content (The Image) -->
     <img class="modal-content" id="img01">
     <p id="next">NEXT</p>
@@ -21,7 +22,7 @@
 <script>
     document.addEventListener('onload', function(e) {
            console.log(this);
-       })
+    });
        var historyPhoto = new Array();
        var modal = document.getElementById('kpicsPreviewModal');
        var photos = document.getElementsByClassName('thumb');
@@ -78,13 +79,15 @@
    
                    modal.style.display = "block";
                    modalImg.src = this.href;
-                   modalImg.classList.add('change');
                    modalImg.classList.remove('changed')
+                   modalImg.classList.add('change');
+                   
                    modalImg.id = photo
                    modal.style.height = Math.round(window.innerHeight * 0.9);
                    document.cookie = 'photo_id=' + photo;
+                   
+                   modalImg.classList.remove('change');
                    modalImg.classList.add('changed');
-                   modalImg.classList.remove('change')
                // }
            };
            var span = document.getElementsByClassName("close")[0];
@@ -102,23 +105,54 @@
                 modal.style.display = "none";
                }
            });
-   
-           var prevPhoto = document.getElementById('prev');
-           prevPhoto.onmouseover = function() {
-               console.log('hover prev');
-           }
-           prevPhoto.onclick = function() {
-   
+            
+           function showPhoto(photo_id) {
+                // let photo_id = Math.floor(photos.length * Math.random());
+               console.log('check modalImg.id = ' + modalImg.id);
                modalImg.classList.add('change');
                console.log("change modalImg");
                modalImg.classList.remove('changed')
                
                // e.preventDefault();
                console.log('click prev');
-               let random_id = Math.floor(photos.length * Math.random());
-               console.log(random_id);
-               modalImg.src = photos[random_id].href;
-               modalImg.id = random_id;
+               
+               console.log(photo_id);
+               modalImg.src = photos[photo_id].href;
+               modalImg.id = photo_id;
+               modalImg.classList.add('changed');
+               modalImg.classList.remove('change')
+               console.log("changed modalImg");
+               modalImg.style.setProperty('--animation-time', Math.random() + 's')
+           }
+
+           var randomPhoto = document.getElementById('random');
+           randomPhoto.onmouseover = function() {
+            console.log('hover button random');
+           }
+           randomPhoto.onclick = function() {
+            let photo_id = Math.floor(photos.length * Math.random());
+            showPhoto(photo_id);
+           }
+
+           var prevPhoto = document.getElementById('prev');
+           prevPhoto.onmouseover = function() {
+               console.log('hover prev');
+           }
+           prevPhoto.onclick = function() {
+            
+               let photo_id = Math.floor(photos.length * Math.random());
+                             
+               console.log('check modalImg.id = ' + modalImg.id);
+               modalImg.classList.add('change');
+               console.log("change modalImg");
+               modalImg.classList.remove('changed')
+               
+               // e.preventDefault();
+               console.log('click prev');
+               
+               console.log(photo_id);
+               modalImg.src = photos[photo_id].href;
+               modalImg.id = photo_id;
                modalImg.classList.add('changed');
                modalImg.classList.remove('change')
                console.log("changed modalImg");

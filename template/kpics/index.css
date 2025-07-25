@@ -251,3 +251,28 @@ header{
   border-radius: 6px;
   border: 3px solid green;
 }
+#random {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 50%;
+  z-index: 1000;
+  background: blue;
+  padding: 3px;
+  border-radius: 6px;
+  border: 3px solid blue;
+  color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+#random:hover {
+  background: darkblue;
+  color: #ddd;
+  border: 3px solid darkblue;
+ color: white;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: solid;
+}
+ 
+ 

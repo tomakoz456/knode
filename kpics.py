@@ -129,9 +129,12 @@ class KpicsProcessor:
                     os.chdir(os.path.dirname(thumb_full_path))
                     thumb = cv2.imread(os.path.basename(thumb_full_path))
                     thumb_height, thumb_width = thumb.shape[:2]
-
+                # link = os.path.join(self.links_dir_path, thumb_name)
+                # if not os.path.islink(link):
+                #     os.symlink(path, link)
+                #     print("Create symlink for thumb: %s" % link)
                 self.add_html('<a id="photo-%s" href="%s" class="thumb" title="%s in %s">' % (str(id), path, os.path.basename(path), os.path.dirname(path)))
-                self.add_html('<img src="%s" alt="%s" width="%s" height="%s"/>' % (path, os.path.basename(path), str(thumb_width), str(thumb_height)))
+                self.add_html('<img src="%s" alt="%s" width="%s" height="%s"/>' % (thumb_full_path, os.path.basename(path), str(thumb_width), str(thumb_height)))
                 self.add_html('<p class="photo_info">')
                 self.add_html('<span class="photo_filename" title="Nazwa pliku">%s</span>' % os.path.basename(path))
                 self.add_html('<span class="photo_ctime" title="Data utworzenia">%s</span>' % datetime.datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y-%m-%d %H:%M:%S'))
@@ -184,7 +187,8 @@ class KpicsProcessor:
 
 if __name__ == '__main__':
     photos_dir_dict = {0: r'K:\trainman\fb'}
-    photos_dir_dict[1] = r'Y:\Pictures\instagram'
+    photos_dir_dict[2] = r'Y:\Pictures\instagram'
+    # photos_dir_dict = {0: r'Y:\Pictures\instagram'}
     # photos_dir_dict = {0: r'Y:\Pictures\instagram'}
     processor = KpicsProcessor(
         photos_dir_path=photos_dir_dict,
