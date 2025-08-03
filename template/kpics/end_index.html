@@ -29,16 +29,41 @@
        var rect = new Object;
        var x = 0;
        var y = 0;
-       
+       var rows = new Array();
+       for (let i = 0; i < photos.length; i++) {
+           rows[i] = new Array();
+           rows[i][0] = i;
+       }
+       var rows_width = {};
        var photo_id = {};
+       var rows_id = 0;
+        var new_x = 0;
+         if (document.cookie.indexOf('photo_id') > -1) {
+              let photo_id = document.cookie.split('photo_id=')[1].split(';')[0];
+              console.log('photo_id = ' + photo_id);
+              if (photo_id >= 0 && photo_id < photos.length) {
+                console.log('scroll to photo-' + photo_id);
+                document.getElementById('photo-' + photo_id).scrollIntoView({ behavior: 'smooth' });
+              }
+            } else {
+              console.log('no photo_id in cookie');
+            }
        for (let photo in photos) {
            if (!parseInt(photo)) {
                continue;
            }
-           if ( x + photos[photo].clientWidth + 23 > document.body.clientWidth ) {
+           new_x = x + photos[photo].clientWidth + 23;
+           if ( new_x > document.body.clientWidth ) {
+               for (let i = 0; i < rows[rows_id].length; i++) {
+                //    photos[rows_width[rows_id][i]].style['left'] = x + "px";
+                   console.log('rows_width[' + rows_id + '][' + i + '] = ' + rows[rows_id][i]);
+               }
+               rows[rows_id++] = [];
                x = 0;
                y += photos[photo].clientHeight + 0;
            }
+        //    rows[rows_id][rows_width[rows_id].length] = photo_id;
+           rows_width[rows_id] += photos[photo].clientWidth;
            photos[photo].classList.add('thumb-show');
            rect[photo] = new Object();
            rect[photo]['height'] = photos[photo].clientHeight;
@@ -46,9 +71,11 @@
            rect[photo]['top'] = photos[photo].clientHeight;
            photos[photo].style['left']= x + "px";
            photos[photo].style['top'] = y + "px";
+           rows_width[rows_id] = x + photos[photo].clientWidth;
+           photo_id[photo] = photo;
            
            x += photos[photo].clientWidth + 1;
-   
+           
            // console.log(photos[photo]);
            var modalImg = document.getElementById("img01");
            var captionText = document.getElementById("caption");
@@ -93,15 +120,16 @@
            var span = document.getElementsByClassName("close")[0];
    
            span.onclick = function() {
-               modal.style.display = "none";
+                document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).scrollIntoView({ behavior: 'smooth' });
+                console.log('scroll to photo-' + modal.getElementsByTagName('img')[0].getAttribute('id'));  
+                modal.style.display = "none";
            };
    
            document.addEventListener("keydown", function(e) {
                if(e.keyCode == 27) {
                     // document.body.scrollTop(document.getElementById(photo).offsetTop());
                 //    document.body.scrollTop = document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).offsetTop;
-                document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).scrollIntoView({ behavior: 'smooth' });
-                   console.log('scroll to photo-' + modal.getElementsByTagName('img')[0].getAttribute('id'));   
+ 
                 modal.style.display = "none";
                }
            });

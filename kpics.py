@@ -10,6 +10,7 @@ import shutil
 from urllib.parse import quote, urlencode
 import datetime
 from humanfriendly import format_size, format_path, format_timespan
+# import pickle
 # import time
 # import matplotlib.pyplot as plt
 
@@ -133,18 +134,23 @@ class KpicsProcessor:
                 # if not os.path.islink(link):
                 #     os.symlink(path, link)
                 #     print("Create symlink for thumb: %s" % link)
-                self.add_html('<a id="photo-%s" href="%s" class="thumb" title="%s in %s">' % (str(id), path, os.path.basename(path), os.path.dirname(path)))
-                self.add_html('<img src="%s" alt="%s" width="%s" height="%s"/>' % (thumb_full_path, os.path.basename(path), str(thumb_width), str(thumb_height)))
-                self.add_html('<p class="photo_info">')
-                self.add_html('<span class="photo_filename" title="Nazwa pliku">%s</span>' % os.path.basename(path))
-                self.add_html('<span class="photo_ctime" title="Data utworzenia">%s</span>' % datetime.datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y-%m-%d %H:%M:%S'))
-                self.add_html('<span class="photo_mtime" title="Data modyfikacji">%s</span>' % datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y-%m-%d %H:%M:%S'))
-                self.add_html('<span class="photo_size" title="Rozmiar pliku">%s</span>' % format_size(os.path.getsize(path), binary=True))
-                self.get_external_links(path)
-                self.add_html('</p>')
-                self.add_html('</a>')
+                self.add_html_photo(path, thumb_full_path, thumb_width, thumb_height, id)
                 id += 1
                 os.chdir(self.init_dir)
+
+    def add_html_photo(self, path, thumb_full_path, thumb_width, thumb_height, id):
+        self.add_html('<a id="photo-%s" href="%s" class="thumb" title="%s in %s">' % (str(id), path, os.path.basename(path), os.path.dirname(path)))
+        self.add_html('<img src="%s" alt="%s" width="%s" height="%s"/>' % (thumb_full_path, os.path.basename(path), str(thumb_width), str(thumb_height)))
+        self.add_html('<p class="photo_info">')
+        self.add_html('<span class="photo_filename" title="Nazwa pliku">%s</span>' % os.path.basename(path))
+        self.add_html('<span class="photo_ctime" title="Data utworzenia">%s</span>' % datetime.datetime.fromtimestamp(os.path.getctime(path)).strftime('%Y-%m-%d %H:%M:%S'))
+        self.add_html('<span class="photo_mtime" title="Data modyfikacji">%s</span>' % datetime.datetime.fromtimestamp(os.path.getmtime(path)).strftime('%Y-%m-%d %H:%M:%S'))
+        self.add_html('<span class="photo_size" title="Rozmiar pliku">%s</span>' % format_size(os.path.getsize(path), binary=True))
+        self.get_external_links(path)
+        self.add_html('</p>')
+        self.add_html('</a>')
+        self.add_html('<script>document.getElementById("photo-%s").scrollIntoView({ behavior: "smooth" });</script>' % str(id))
+
 
     def generate_html(self, html_name='index.html'):
         html_path = os.path.join(self.thumb_dir_path, html_name)
@@ -186,10 +192,10 @@ class KpicsProcessor:
 
 
 if __name__ == '__main__':
-    photos_dir_dict = {0: r'K:\trainman\fb'}
-    photos_dir_dict[2] = r'Y:\Pictures\instagram'
-    # photos_dir_dict = {0: r'Y:\Pictures\instagram'}
-    # photos_dir_dict = {0: r'Y:\Pictures\instagram'}
+    # photos_dir_dict = {0: r'K:\trainman\fb'}
+    # photos_dir_dict[2] = r'Y:\Pictures\instagram'
+    photos_dir_dict = {0: r'C:\Users\kogut\Pictures\sky'}
+    
     processor = KpicsProcessor(
         photos_dir_path=photos_dir_dict,
         thumb_dir=r'C:\Users\kogut\Documents\.kpics',
@@ -201,6 +207,7 @@ if __name__ == '__main__':
 
     processor.generate_html()
     print("HTML generated in: %s" % _thumb_dir_path)
+    print("HTML file: %s" % os.path.join(_thumb_dir_path, 'index.html'))
     # show("Thumb", thumb)
     # print(_html)
     # print(_thumb_dir_path)dfd
