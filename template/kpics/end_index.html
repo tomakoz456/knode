@@ -4,7 +4,7 @@
 
     <!-- The Close Button -->
     <span class="close">&times;</span>
-    <p id="prev">PREV</p>
+    <p id="prev"><span>PREV</span></p>
     <p id="buttons">
         <p id="add">ADD</p>
         <p id="del">DEL</p>
@@ -13,7 +13,7 @@
     <p id="random">RANDOM</p>
     <!-- Modal Content (The Image) -->
     <img class="modal-content" id="img01">
-    <p id="next">NEXT</p>
+    <p id="next"><span>NEXT</span></p>
     <!-- Modal Caption (Image Text) -->
     <div id="caption"></div>
 </div>
@@ -84,67 +84,47 @@
            };
            photos[photo].onclick = function(e) {
                e.preventDefault();
-               // var kimg = this.children[0];
-               // kimg.classList.add('thumb-show');
-               // var _height = Math.round(window.innerHeight * 0.8);
-                
-               
-               // var proportion = photos[photo].firstChild.clientWidth / photos[photo].firstChild.clientHeight;
-               // console.log(proportion);
-               // console.log(kimg);
-               // kimg.width = _height * proportion;
-               // kimg.height = _height;
-               // kimg.left = photos[photo].left - 0.5 * photos[photo].firstChild.clientWidth;
-               // kimg.top = photos[photo].top - 0.5 * photos[photo].firstChild.clientHeight;
-   
-               // console.log(kimg.width);
-               // console.log(kimg.height);
-               // kimg.src = photos[photo].href;
-               // if (1 == 2) {
-                   this.style.setProperty('z-index', 1);
-                   // this.getElementsByTagName('img').src = this.href;
-   
-                   modal.style.display = "block";
-                   modalImg.src = this.href;
-                   modalImg.classList.remove('changed')
-                   modalImg.classList.add('change');
-                   
-                   modalImg.id = photo
-                   modal.style.height = Math.round(window.innerHeight * 0.9);
-                   document.cookie = 'photo_id=' + photo;
-                   
-                   modalImg.classList.remove('change');
-                   modalImg.classList.add('changed');
-               // }
+               modalImg.id = photo;
+               showPhoto(photo);
            };
            var span = document.getElementsByClassName("close")[0];
    
            span.onclick = function() {
                 document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).scrollIntoView({ behavior: 'smooth' });
                 console.log('scroll to photo-' + modal.getElementsByTagName('img')[0].getAttribute('id'));  
-                modal.style.display = "none";
+                hidePhoto();
            };
    
-           document.addEventListener("keydown", function(e) {
-               if(e.keyCode == 27) {
-                    // document.body.scrollTop(document.getElementById(photo).offsetTop());
-                //    document.body.scrollTop = document.getElementById('photo-' + modal.getElementsByTagName('img')[0].getAttribute('id')).offsetTop;
- 
-                modal.style.display = "none";
-               }
-           });
-            
+           
+           function hidePhoto() {
+               modal.style.display = "none";
+               console.log('hide photo');
+           }
            function showPhoto(photo_id) {
                 // let photo_id = Math.floor(photos.length * Math.random());
-               console.log('check modalImg.id = ' + modalImg.id);
+                let photo = document.querySelector('#photo-' + photo_id);
+                historyPhoto.push(photo_id);
+                console.log('historyPhoto = ' + historyPhoto);
+                if (!photo) {
+                    console.log('photo-' + photo_id + ' not found');
+                    return;
+                }
+                console.log('show photo-' + photo_id);
+                if (photo_id < 0 || photo_id >= photos.length) {
+                    console.log('photo_id out of range: ' + photo_id);
+                    return;
+                }
+                // if (modal.style.display == "block") {
+                //     console.log('photo-' + modalImg.id + ' already shown');
+                //     return;
+                // }
+                
+                photo.style.zIndex = 1;
+                modal.style.display = "block";
+               console.log('show photo ' + photo_id);
                modalImg.classList.add('change');
-               console.log("change modalImg");
                modalImg.classList.remove('changed')
-               
-               // e.preventDefault();
-               console.log('click prev');
-               
-               console.log(photo_id);
+                             
                modalImg.src = photos[photo_id].href;
                modalImg.id = photo_id;
                modalImg.classList.add('changed');
@@ -152,14 +132,19 @@
                console.log("changed modalImg");
                modalImg.style.setProperty('--animation-time', Math.random() + 's')
            }
+           function showRandomPhoto() {
+               let photo_id = Math.floor(photos.length * Math.random());
+               console.log('show random photo ' + photo_id);
+               showPhoto(photo_id);
+           }
 
            var randomPhoto = document.getElementById('random');
            randomPhoto.onmouseover = function() {
             console.log('hover button random');
            }
            randomPhoto.onclick = function() {
-            let photo_id = Math.floor(photos.length * Math.random());
-            showPhoto(photo_id);
+            showRandomPhoto();
+            console.log('click random');
            }
 
            var prevPhoto = document.getElementById('prev');
@@ -169,22 +154,22 @@
            prevPhoto.onclick = function() {
             
                let photo_id = Math.floor(photos.length * Math.random());
-                             
-               console.log('check modalImg.id = ' + modalImg.id);
-               modalImg.classList.add('change');
-               console.log("change modalImg");
-               modalImg.classList.remove('changed')
+               showPhoto(photo_id);              
+            //    console.log('check modalImg.id = ' + modalImg.id);
+            //    modalImg.classList.add('change');
+            //    console.log("change modalImg");
+            //    modalImg.classList.remove('changed')
                
-               // e.preventDefault();
-               console.log('click prev');
+            //    // e.preventDefault();
+            //    console.log('click prev');
                
-               console.log(photo_id);
-               modalImg.src = photos[photo_id].href;
-               modalImg.id = photo_id;
-               modalImg.classList.add('changed');
-               modalImg.classList.remove('change')
-               console.log("changed modalImg");
-               modalImg.style.setProperty('--animation-time', Math.random() + 's')
+            //    console.log(photo_id);
+            //    modalImg.src = photos[photo_id].href;
+            //    modalImg.id = photo_id;
+            //    modalImg.classList.add('changed');
+            //    modalImg.classList.remove('change')
+            //    console.log("changed modalImg");
+            //    modalImg.style.setProperty('--animation-time', Math.random() + 's')
            }
    
            var nextPhoto = document.getElementById('next');
@@ -196,22 +181,119 @@
                modalImg.id = parseInt(modalImg.id);
                modalImg.id++;
                if (modalImg.id == photos.length - 1) {
-                   modalImg.classList.add('change');
-                   console.log("change modalImg");
-                   modalImg.classList.remove('changed')
-                   modalImg.src = photos[0].href;
+                //    modalImg.classList.add('change');
+                //    console.log("change modalImg");
+                //    modalImg.classList.remove('changed')
+                //    modalImg.src = photos[0].href;
                    modalImg.id = 0;
-               } else {
-                   modalImg.classList.add('change');
-                   console.log("change modalImg");
-                   modalImg.classList.remove('changed')
-                   console.log(modalImg.id);
-                   modalImg.src = photos[modalImg.id].href;
-                   modalImg.id = modalImg.id;
-               }
+               } 
+            //    else {
+                //    modalImg.classList.add('change');
+                //    console.log("change modalImg");
+                //    modalImg.classList.remove('changed')
+                //    console.log(modalImg.id);
+                //    modalImg.src = photos[modalImg.id].href;
+                //    modalImg.id = modalImg.id;
+            //    }
+                showPhoto(modalImg.id);
+                console.log('click next');
            }
            
+           
        }
+       document.addEventListener("keydown", function(e) {
+                console.log('keydown ' + e.keyCode);
+               if(e.keyCode == 27) {
+                    hidePhoto();
+                    console.log('hide photo by ESC');
+               }
+                if(e.keyCode == 37 || e.keyCode == 80) {
+                      console.log('click prev or arrow left');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id > 0) {
+                            photo_id--;
+                      } else {
+                            photo_id = photos.length - 1;
+                      }
+                      showPhoto(photo_id);
+                }
+                if(e.keyCode == 39 || e.keyCode == 78) {
+                      console.log('click next or arrow right');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id < photos.length - 1) {
+                            photo_id++;
+                      } else {
+                            photo_id = 0;
+                      }
+                      showPhoto(photo_id);
+                }
+                if(e.keyCode == 82) {
+                      console.log('click r for random');
+                      showRandomPhoto();
+                }
+                if(e.keyCode == 65) {
+                      console.log('click add');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id >= 0 && photo_id < photos.length) {
+                            document.getElementById('photo-' + photo_id).scrollIntoView({ behavior: 'smooth' });
+                            console.log('scroll to photo-' + photo_id);
+                            // Add your add logic here
+                      }
+                }
+                if(e.keyCode == 68) {
+                      console.log('click del');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id >= 0 && photo_id < photos.length) {
+                            document.getElementById('photo-' + photo_id).scrollIntoView({ behavior: 'smooth' });
+                            console.log('scroll to photo-' + photo_id);
+                            // Add your delete logic here
+                      }
+                }
+                if(e.keyCode == 73) {
+                      console.log('click info');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id >= 0 && photo_id < photos.length) {
+                            document.getElementById('photo-' + photo_id).scrollIntoView({ behavior: 'smooth' });
+                            console.log('scroll to photo-' + photo_id);
+                            // Add your info logic here
+                      }
+                }
+                if(e.keyCode == 107) {
+                      console.log('click + zoom in');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id >= 0 && photo_id < photos.length) {
+                            let photo = document.getElementById('photo-' + photo_id);
+                            if (photo) {
+                                  photo.style.transform = 'scale(1.1)';
+                                  console.log('zoom in photo-' + photo_id);
+                            }
+                      }
+                }
+                if(e.keyCode == 109) {
+                    console.log('click - for zoom out');
+                      console.log('click zoom out');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id >= 0 && photo_id < photos.length) {
+                            let photo = document.getElementById('photo-' + photo_id);
+                            if (photo) {
+                                  photo.style.transform = 'scale(0.9)';
+                                  console.log('zoom out photo-' + photo_id);
+                            }
+                      }
+                }
+                if(e.keyCode == 79) {
+                      console.log('pres o to open in new tab');
+                      let photo_id = parseInt(modalImg.id);
+                      if (photo_id >= 0 && photo_id < photos.length) {
+                            let url = photos[photo_id].href;
+                            var newTab = window.open(url,'_blank');
+                            newTab.focus();
+                            console.log('open in new tab photo-' + photo_id);
+                            // Add your space logic here
+                      }
+                }
+                
+           });
    </script>
 </body>
 </html>
